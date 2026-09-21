@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universal Loan EMI Calculator</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    },
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-card: rgba(30, 41, 59, 0.7);
+            --bg-input: #0f172a;
+            --border-color: rgba(51, 65, 85, 0.6);
+            --text-primary: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-primary: #3b82f6;
+            --accent-secondary: #f59e0b;
+            --accent-gradient: linear-gradient(135deg, #3b82f6, #6366f1);
+            --ring-track: rgba(51, 65, 85, 0.4);
+            --slider-thumb: #3b82f6;
+            --card-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Dynamic Theme Classes */
+        body.theme-midnight {
+            --bg-primary: #0b0f19;
+            --bg-card: rgba(17, 24, 39, 0.75);
+            --bg-input: #030712;
+            --border-color: rgba(31, 41, 55, 0.8);
+            --text-primary: #f9fafb;
+            --text-muted: #9ca3af;
+            --accent-primary: #3b82f6;
+            --accent-secondary: #f59e0b;
+            --accent-gradient: linear-gradient(135deg, #2563eb, #4f46e5);
+            --ring-track: rgba(31, 41, 55, 0.6);
+            --slider-thumb: #3b82f6;
+        }
+
+        body.theme-light {
+            --bg-primary: #f1f5f9;
+            --bg-card: rgba(255, 255, 255, 0.85);
+            --bg-input: #ffffff;
+            --border-color: rgba(203, 213, 225, 0.8);
+            --text-primary: #0f172a;
+            --text-muted: #64748b;
+            --accent-primary: #2563eb;
+            --accent-secondary: #d97706;
+            --accent-gradient: linear-gradient(135deg, #2563eb, #1d4ed8);
+            --ring-track: rgba(226, 232, 240, 0.9);
+            --slider-thumb: #2563eb;
+            --card-shadow: 0 10px 25px -5px rgba(148, 163, 184, 0.2);
+        }
+
+        body.theme-cyberpunk {
+            --bg-primary: #090014;
+            --bg-card: rgba(22, 6, 44, 0.8);
+            --bg-input: #04000a;
+            --border-color: rgba(236, 72, 153, 0.3);
+            --text-primary: #00f0ff;
+            --text-muted: #ff77e1;
+            --accent-primary: #00f0ff;
+            --accent-secondary: #ff007f;
+            --accent-gradient: linear-gradient(135deg, #00f0ff, #ff007f);
+            --ring-track: rgba(40, 10, 70, 0.8);
+            --slider-thumb: #ff007f;
+            --card-shadow: 0 0 20px rgba(0, 240, 255, 0.15);
+        }
+
+        body.theme-gold {
+            --bg-primary: #12100e;
+            --bg-card: rgba(28, 25, 23, 0.8);
+            --bg-input: #0c0a09;
+            --border-color: rgba(217, 119, 6, 0.3);
+            --text-primary: #fef08a;
+            --text-muted: #a8a29e;
+            --accent-primary: #eab308;
+            --accent-secondary: #f97316;
+            --accent-gradient: linear-gradient(135deg, #eab308, #ca8a04);
+            --ring-track: rgba(44, 36, 32, 0.8);
+            --slider-thumb: #eab308;
+            --card-shadow: 0 10px 30px rgba(234, 179, 8, 0.1);
+        }
+
+        body.theme-emerald {
+            --bg-primary: #022c22;
+            --bg-card: rgba(6, 78, 59, 0.5);
+            --bg-input: #022018;
+            --border-color: rgba(16, 185, 129, 0.3);
+            --text-primary: #ecfdf5;
+            --text-muted: #6ee7b7;
+            --accent-primary: #10b981;
+            --accent-secondary: #f59e0b;
+            --accent-gradient: linear-gradient(135deg, #10b981, #059669);
+            --ring-track: rgba(6, 95, 70, 0.5);
+            --slider-thumb: #10b981;
+            --card-shadow: 0 10px 30px rgba(16, 185, 129, 0.15);
+        }
+
+        body.theme-sunset {
+            --bg-primary: #1a0c1a;
+            --bg-card: rgba(45, 18, 45, 0.7);
+            --bg-input: #120612;
+            --border-color: rgba(244, 63, 94, 0.3);
+            --text-primary: #ffe4e6;
+            --text-muted: #fda4af;
+            --accent-primary: #f43f5e;
+            --accent-secondary: #fb923c;
+            --accent-gradient: linear-gradient(135deg, #f43f5e, #fb923c);
+            --ring-track: rgba(60, 20, 60, 0.6);
+            --slider-thumb: #f43f5e;
+            --card-shadow: 0 10px 30px rgba(244, 63, 94, 0.15);
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background-color 0.4s ease, color 0.4s ease;
+        }
+
+        .theme-card {
+            background-color: var(--bg-card);
+            border-color: var(--border-color);
+            box-shadow: var(--card-shadow);
+        }
+
+        .theme-input {
+            background-color: var(--bg-input);
+            border-color: var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .theme-subtext {
+            color: var(--text-muted);
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-primary);
+        }
+
+        /* Range input styling */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]:focus {
+            outline: none;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 22px;
+            width: 22px;
+            border-radius: 50%;
+            background: var(--slider-thumb);
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+            margin-top: -7px;
+            transition: transform 0.15s ease, background-color 0.2s ease;
+        }
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 8px;
+            cursor: pointer;
+            background: var(--ring-track);
+            border-radius: 4px;
+        }
+
+        /* Chart Animations */
+        .chart-ring {
+            transition: stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+
+        /* Print styles */
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            .theme-card {
+                box-shadow: none !important;
+                border: 1px solid #ccc !important;
+                background: white !important;
+            }
+        }
+    </style>
+</head>
+<body class="theme-midnight min-h-screen font-sans antialiased pb-12" id="appBody">
+
+    <header class="border-b sticky top-0 z-40 backdrop-blur-md theme-card border-opacity-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
+            
+            <!-- Logo & Title -->
+            <div class="flex items-center space-x-3">
+                <div class="p-3 rounded-2xl shadow-lg text-white flex items-center justify-center" style="background: var(--accent-gradient)">
+                    <i class="fa-solid fa-calculator text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight flex items-center gap-2">
+                        Universal EMI Calculator
+                        <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full border border-blue-500/30 text-blue-400 bg-blue-500/10">Uncapped</span>
+                    </h1>
+                    <p class="text-xs theme-subtext">Calculate loan schedules with zero maximum input limits</p>
+                </div>
+            </div>
+
+            <!-- Toolbar: Currency & Theme Controls -->
+            <div class="flex flex-wrap items-center justify-center gap-3 no-print">
+                
+                <!-- Currency Symbol Input Control -->
+                <div class="flex items-center border rounded-xl px-2 py-1 shadow-inner theme-input">
+                    <span class="text-xs font-semibold theme-subtext pr-2"><i class="fa-solid fa-coins text-amber-500 mr-1"></i>Currency:</span>
+                    
+                    <!-- Quick Select -->
+                    <select id="currencyPreset" onchange="handleCurrencyPreset(this.value)" class="bg-transparent text-xs font-bold focus:outline-none cursor-pointer pr-1 py-1">
+                        <option value="$" class="bg-slate-900 text-white">$ (USD)</option>
+                        <option value="€" class="bg-slate-900 text-white">€ (EUR)</option>
+                        <option value="£" class="bg-slate-900 text-white">£ (GBP)</option>
+                        <option value="₹" class="bg-slate-900 text-white">₹ (INR)</option>
+                        <option value="¥" class="bg-slate-900 text-white">¥ (JPY/CNY)</option>
+                        <option value="₦" class="bg-slate-900 text-white">₦ (NGN)</option>
+                        <option value="R" class="bg-slate-900 text-white">R (ZAR)</option>
+                        <option value="custom" class="bg-slate-900 text-white">⚙️ Custom...</option>
+                    </select>
+
+                    <!-- Free Form Custom Symbol/Code Input -->
+                    <input type="text" id="customCurrencyInput" value="$" placeholder="e.g. BTC, CHF"
+                           oninput="updateCurrencySymbol(this.value)"
+                           class="w-20 bg-slate-800/80 border border-slate-700 text-xs font-mono font-bold px-2 py-1 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 ml-1 text-center">
+                </div>
+
+                <!-- Interactive Theme Switcher Dropdown -->
+                <div class="flex items-center border rounded-xl px-2 py-1 shadow-inner theme-input">
+                    <span class="text-xs font-semibold theme-subtext pr-2"><i class="fa-solid fa-palette text-indigo-400 mr-1"></i>Theme:</span>
+                    <select id="themeSelect" onchange="changeTheme(this.value)" class="bg-transparent text-xs font-bold focus:outline-none cursor-pointer py-1 pr-1">
+                        <option value="theme-midnight" class="bg-slate-900 text-white">Midnight Dark</option>
+                        <option value="theme-light" class="bg-slate-900 text-white">Clean Light</option>
+                        <option value="theme-cyberpunk" class="bg-slate-900 text-white">Neon Cyber</option>
+                        <option value="theme-gold" class="bg-slate-900 text-white">Warm Gold</option>
+                        <option value="theme-emerald" class="bg-slate-900 text-white">Emerald Finance</option>
+                        <option value="theme-sunset" class="bg-slate-900 text-white">Sunset Coral</option>
+                    </select>
+                </div>
+
+                <!-- Print Button -->
+                <button onclick="window.print()" title="Print Summary Report" 
+                        class="p-2 border rounded-xl hover:opacity-80 transition-all shadow-sm active:scale-95 theme-input">
+                    <i class="fa-solid fa-print"></i>
+                </button>
+            </div>
+
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 space-y-8">
+
+        <!-- Upper Grid: Input Controls & Result Visualizations -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+            <!-- LEFT PANEL: Loan Inputs (Uncapped Limits) -->
+            <div class="lg:col-span-5 border rounded-3xl p-6 md:p-8 backdrop-blur-xl theme-card flex flex-col justify-between space-y-6">
+                <div>
+                    <div class="flex items-center justify-between mb-6 pb-3 border-b border-slate-700/50">
+                        <h2 class="text-lg font-bold flex items-center gap-2">
+                            <i class="fa-solid fa-sliders text-blue-400"></i> Loan Parameters
+                        </h2>
+                        <button onclick="resetDefaults()" class="text-xs theme-subtext hover:text-blue-400 transition-colors flex items-center gap-1 no-print">
+                            <i class="fa-solid fa-rotate-right"></i> Reset
+                        </button>
+                    </div>
+
+                    <form id="emiForm" onsubmit="event.preventDefault();" class="space-y-6">
+
+                        <!-- 1. Principal Amount (Uncapped) -->
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center gap-2">
+                                <label for="principalInput" class="text-xs font-semibold uppercase tracking-wider theme-subtext">Principal Amount</label>
+                                <div class="flex items-center border rounded-xl px-3 py-1.5 theme-input">
+                                    <span class="currencySymbol font-mono font-bold text-blue-400 mr-1.5">$</span>
+                                    <!-- NO MAX ATTRIBUTE -->
+                                    <input type="number" id="principalInput" value="100000" min="0" step="any"
+                                           class="w-36 bg-transparent text-right font-mono font-bold text-sm focus:outline-none">
+                                </div>
+                            </div>
+                            <!-- Dynamic auto-expanding range slider -->
+                            <input type="range" id="principalSlider" min="0" max="1000000" step="1000" value="100000">
+                            <div class="flex justify-between text-[10px] font-mono theme-subtext">
+                                <span id="principalMinLabel"><span class="currencySymbol">$</span>0</span>
+                                <span id="principalMidLabel"><span class="currencySymbol">$</span>500K</span>
+                                <span id="principalMaxLabel"><span class="currencySymbol">$</span>1M</span>
+                            </div>
+                        </div>
+
+                        <!-- 2. Annual Interest Rate (Uncapped) -->
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center gap-2">
+                                <label for="interestInput" class="text-xs font-semibold uppercase tracking-wider theme-subtext">Annual Interest Rate</label>
+                                <div class="flex items-center border rounded-xl px-3 py-1.5 theme-input">
+                                    <!-- NO MAX ATTRIBUTE -->
+                                    <input type="number" id="interestInput" value="7.5" min="0" step="any"
+                                           class="w-24 bg-transparent text-right font-mono font-bold text-sm focus:outline-none">
+                                    <span class="font-mono font-bold text-blue-400 ml-1.5">%</span>
+                                </div>
+                            </div>
+                            <!-- Dynamic auto-expanding range slider -->
+                            <input type="range" id="interestSlider" min="0" max="25" step="0.1" value="7.5">
+                            <div class="flex justify-between text-[10px] font-mono theme-subtext">
+                                <span id="interestMinLabel">0%</span>
+                                <span id="interestMidLabel">12.5%</span>
+                                <span id="interestMaxLabel">25%</span>
+                            </div>
+                        </div>
+
+                        <!-- 3. Tenure Input & Toggle (Uncapped) -->
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center gap-2">
+                                <label for="tenureInput" class="text-xs font-semibold uppercase tracking-wider theme-subtext">Loan Tenure</label>
+                                
+                                <div class="flex items-center gap-2">
+                                    <!-- Years / Months Switcher -->
+                                    <div class="border p-0.5 rounded-lg flex text-xs theme-input">
+                                        <button type="button" id="btnTenureYears" onclick="setTenureMode('years')" 
+                                                class="px-2.5 py-1 rounded-md font-bold text-white transition-all" style="background: var(--accent-gradient)">Yr</button>
+                                        <button type="button" id="btnTenureMonths" onclick="setTenureMode('months')" 
+                                                class="px-2.5 py-1 rounded-md font-bold theme-subtext hover:text-white transition-all">Mo</button>
+                                    </div>
+
+                                    <div class="flex items-center border rounded-xl px-3 py-1.5 theme-input">
+                                        <!-- NO MAX ATTRIBUTE -->
+                                        <input type="number" id="tenureInput" value="15" min="0" step="any"
+                                               class="w-20 bg-transparent text-right font-mono font-bold text-sm focus:outline-none">
+                                        <span id="tenureUnitLabel" class="theme-subtext font-mono font-bold ml-1 text-xs">Yrs</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Dynamic auto-expanding range slider -->
+                            <input type="range" id="tenureSlider" min="0" max="30" step="1" value="15">
+                            <div class="flex justify-between text-[10px] font-mono theme-subtext">
+                                <span id="tenureMinLabel">0 Yr</span>
+                                <span id="tenureMidLabel">15 Yrs</span>
+                                <span id="tenureMaxLabel">30 Yrs</span>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+
+                <!-- Input Footer info -->
+                <div class="pt-4 border-t border-slate-700/50 text-xs theme-subtext flex items-center justify-between">
+                    <span><i class="fa-solid fa-lock-open mr-1 text-blue-400"></i> Completely Uncapped Range</span>
+                    <span id="totalMonthsBadge" class="border px-2.5 py-1 rounded-full font-mono font-semibold theme-input">180 Months</span>
+                </div>
+            </div>
+
+            <!-- RIGHT PANEL: Result Metrics Cards & Donut Chart -->
+            <div class="lg:col-span-7 space-y-6 flex flex-col justify-between">
+
+                <!-- Highlights Cards Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    
+                    <!-- Monthly EMI Highlight Card -->
+                    <div class="rounded-2xl p-5 shadow-xl relative overflow-hidden flex flex-col justify-between text-white" style="background: var(--accent-gradient)">
+                        <div class="absolute -right-2 -bottom-2 text-white/10 text-6xl pointer-events-none">
+                            <i class="fa-solid fa-calendar-check"></i>
+                        </div>
+                        <div>
+                            <span class="text-xs uppercase font-extrabold tracking-wider text-white/80">Monthly EMI</span>
+                            <div class="text-2xl sm:text-3xl font-extrabold font-mono mt-2 tracking-tight flex items-baseline flex-wrap">
+                                <span class="currencySymbol text-lg font-sans mr-0.5">$</span>
+                                <span id="displayEmi">0.00</span>
+                            </div>
+                        </div>
+                        <span class="text-[11px] text-white/70 mt-3 block">Payable every month</span>
+                    </div>
+
+                    <!-- Total Interest Card -->
+                    <div class="border rounded-2xl p-5 shadow-lg backdrop-blur-xl theme-card flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs uppercase font-extrabold tracking-wider theme-subtext">Total Interest</span>
+                                <span class="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block"></span>
+                            </div>
+                            <div class="text-xl sm:text-2xl font-bold font-mono mt-2 text-amber-500 tracking-tight flex items-baseline flex-wrap">
+                                <span class="currencySymbol text-base font-sans mr-0.5">$</span>
+                                <span id="displayTotalInterest">0.00</span>
+                            </div>
+                        </div>
+                        <span class="text-[11px] theme-subtext mt-3 block" id="interestPercentText">0% of total loan cost</span>
+                    </div>
+
+                    <!-- Total Amount Payable Card -->
+                    <div class="border rounded-2xl p-5 shadow-lg backdrop-blur-xl theme-card flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs uppercase font-extrabold tracking-wider theme-subtext">Total Amount</span>
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-500 inline-block"></span>
+                            </div>
+                            <div class="text-xl sm:text-2xl font-bold font-mono mt-2 tracking-tight flex items-baseline flex-wrap">
+                                <span class="currencySymbol text-base font-sans mr-0.5">$</span>
+                                <span id="displayTotalPayment">0.00</span>
+                            </div>
+                        </div>
+                        <span class="text-[11px] theme-subtext mt-3 block">Principal + Total Interest</span>
+                    </div>
+
+                </div>
+
+                <!-- Visualization SVG Donut Chart Card -->
+                <div class="border rounded-3xl p-6 backdrop-blur-xl shadow-2xl theme-card flex-1 flex flex-col justify-center">
+                    <h3 class="text-xs font-bold uppercase tracking-wider theme-subtext mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-chart-pie text-indigo-400"></i> Payment Breakdown Ratio
+                    </h3>
+
+                    <div class="flex flex-col sm:flex-row items-center justify-around gap-6">
+                        
+                        <!-- Pure SVG Donut Chart -->
+                        <div class="relative w-48 h-48 flex-shrink-0">
+                            <svg class="w-full h-full" viewBox="0 0 100 100">
+                                <!-- Background Track Ring -->
+                                <circle cx="50" cy="50" r="40" fill="transparent" stroke="var(--ring-track)" stroke-width="12" />
+                                
+                                <!-- Principal Ring (Blue Base) -->
+                                <circle id="svgPrincipalRing" cx="50" cy="50" r="40" fill="transparent" stroke="#3b82f6" stroke-width="12" 
+                                        stroke-dasharray="251.2" stroke-dashoffset="0" class="chart-ring" />
+                                
+                                <!-- Interest Ring (Amber Overlay) -->
+                                <circle id="svgInterestRing" cx="50" cy="50" r="40" fill="transparent" stroke="#f59e0b" stroke-width="12" 
+                                        stroke-dasharray="251.2" stroke-dashoffset="251.2" class="chart-ring" />
+                            </svg>
+                            <!-- Inner Ring Summary -->
+                            <div class="absolute inset-0 flex flex-col items-center justify-center text-center p-2 pointer-events-none">
+                                <span class="text-[10px] uppercase font-bold theme-subtext">Interest Share</span>
+                                <span id="chartCenterText" class="text-xl font-extrabold font-mono text-amber-500">0%</span>
+                            </div>
+                        </div>
+
+                        <!-- Legend Details -->
+                        <div class="space-y-4 w-full max-w-xs">
+                            <!-- Principal Legend -->
+                            <div class="flex items-center justify-between p-3.5 rounded-2xl border theme-input">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-3.5 h-3.5 rounded-md bg-blue-500 shadow-sm"></div>
+                                    <div>
+                                        <div class="text-xs font-bold">Principal Loan</div>
+                                        <div id="legendPrincipalRatio" class="text-[11px] theme-subtext font-mono">0%</div>
+                                    </div>
+                                </div>
+                                <span id="legendPrincipalValue" class="text-xs font-bold font-mono"><span class="currencySymbol">$</span>0</span>
+                            </div>
+
+                            <!-- Interest Legend -->
+                            <div class="flex items-center justify-between p-3.5 rounded-2xl border theme-input">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-3.5 h-3.5 rounded-md bg-amber-500 shadow-sm"></div>
+                                    <div>
+                                        <div class="text-xs font-bold">Interest Payable</div>
+                                        <div id="legendInterestRatio" class="text-[11px] theme-subtext font-mono">0%</div>
+                                    </div>
+                                </div>
+                                <span id="legendInterestValue" class="text-xs font-bold font-mono text-amber-500"><span class="currencySymbol">$</span>0</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- BOTTOM PANEL: Amortization Schedule Table -->
+        <div class="border rounded-3xl p-6 md:p-8 backdrop-blur-xl shadow-2xl theme-card space-y-6">
+            
+            <!-- Table Action Controls -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-700/50">
+                <div>
+                    <h3 class="text-lg font-bold flex items-center gap-2">
+                        <i class="fa-solid fa-table-list text-emerald-500"></i> Amortization Schedule
+                    </h3>
+                    <p class="text-xs theme-subtext">Detailed payment timeline breakdown</p>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-3 no-print">
+                    <!-- Table Search Input -->
+                    <div class="relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-xs theme-subtext"></i>
+                        <input type="text" id="scheduleSearch" placeholder="Filter Month #" oninput="filterSchedule(this.value)"
+                               class="border text-xs rounded-xl pl-8 pr-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 theme-input w-36">
+                    </div>
+
+                    <!-- Toggle Yearly / Monthly View -->
+                    <div class="border p-0.5 rounded-xl flex text-xs theme-input">
+                        <button type="button" id="btnViewMonthly" onclick="setScheduleView('monthly')" 
+                                class="px-3 py-1.5 rounded-lg font-bold text-white transition-all" style="background: var(--accent-gradient)">Monthly</button>
+                        <button type="button" id="btnViewYearly" onclick="setScheduleView('yearly')" 
+                                class="px-3 py-1.5 rounded-lg font-bold theme-subtext hover:text-white transition-all">Yearly Breakdown</button>
+                    </div>
+
+                    <!-- Export CSV Button -->
+                    <button onclick="exportCSV()" 
+                            class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold flex items-center gap-2 transition-all shadow-md shadow-emerald-600/20 active:scale-95">
+                        <i class="fa-solid fa-file-csv text-sm"></i> Export CSV
+                    </button>
+                </div>
+            </div>
+
+            <!-- Table Container -->
+            <div class="overflow-x-auto rounded-2xl border max-h-[500px] overflow-y-auto theme-input">
+                <table class="w-full text-left text-xs font-mono">
+                    <thead class="uppercase tracking-wider font-sans font-bold sticky top-0 z-10 theme-input border-b">
+                        <tr>
+                            <th scope="col" class="py-3.5 px-4"># No.</th>
+                            <th scope="col" class="py-3.5 px-4 text-right">Beginning Balance</th>
+                            <th scope="col" class="py-3.5 px-4 text-right">Payment EMI</th>
+                            <th scope="col" class="py-3.5 px-4 text-right">Principal Paid</th>
+                            <th scope="col" class="py-3.5 px-4 text-right">Interest Paid</th>
+                            <th scope="col" class="py-3.5 px-4 text-right">Remaining Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody id="scheduleTableBody" class="divide-y divide-slate-700/30">
+                        <!-- Dynamic schedule rows generated via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Table Footer Summary Stats -->
+            <div class="flex flex-col sm:flex-row items-center justify-between text-xs theme-subtext gap-2">
+                <span>Displaying <strong id="showingRowsCount" class="text-white">0</strong> period installments</span>
+                <span>Final Loan Balance: <strong class="text-emerald-400 font-mono"><span class="currencySymbol">$</span>0.00</strong></span>
+            </div>
+
+        </div>
+
+    </main>
+
+    <script>
+        // GLOBAL APPLICATION STATE
+        const state = {
+            principal: 100000,
+            annualRate: 7.5,
+            tenureValue: 15,
+            tenureMode: 'years', // 'years' or 'months'
+            currencySymbol: '$',
+            scheduleView: 'monthly', // 'monthly' or 'yearly'
+            searchQuery: '',
+            amortizationData: []
+        };
+
+        // DOM Element Cache
+        const principalInput = document.getElementById('principalInput');
+        const principalSlider = document.getElementById('principalSlider');
+        const interestInput = document.getElementById('interestInput');
+        const interestSlider = document.getElementById('interestSlider');
+        const tenureInput = document.getElementById('tenureInput');
+        const tenureSlider = document.getElementById('tenureSlider');
+        const customCurrencyInput = document.getElementById('customCurrencyInput');
+        const displayEmi = document.getElementById('displayEmi');
+        const displayTotalInterest = document.getElementById('displayTotalInterest');
+        const displayTotalPayment = document.getElementById('displayTotalPayment');
+        const interestPercentText = document.getElementById('interestPercentText');
+
+        // Initialization on Load
+        window.onload = function() {
+            setupEventListeners();
+            calculateAndRender();
+        };
+
+        function setupEventListeners() {
+            // Principal binding (NO MAX LIMIT)
+            principalInput.addEventListener('input', (e) => {
+                const val = parseFloat(e.target.value);
+                state.principal = isNaN(val) ? 0 : Math.max(0, val);
+                adjustSliderBounds('principal', state.principal);
+                principalSlider.value = state.principal;
+                calculateAndRender();
+            });
+            principalSlider.addEventListener('input', (e) => {
+                state.principal = parseFloat(e.target.value) || 0;
+                principalInput.value = state.principal;
+                calculateAndRender();
+            });
+
+            // Interest Rate binding (NO MAX LIMIT)
+            interestInput.addEventListener('input', (e) => {
+                const val = parseFloat(e.target.value);
+                state.annualRate = isNaN(val) ? 0 : Math.max(0, val);
+                adjustSliderBounds('interest', state.annualRate);
+                interestSlider.value = state.annualRate;
+                calculateAndRender();
+            });
+            interestSlider.addEventListener('input', (e) => {
+                state.annualRate = parseFloat(e.target.value) || 0;
+                interestInput.value = state.annualRate;
+                calculateAndRender();
+            });
+
+            // Tenure binding (NO MAX LIMIT)
+            tenureInput.addEventListener('input', (e) => {
+                const val = parseFloat(e.target.value);
+                state.tenureValue = isNaN(val) ? 0 : Math.max(0, val);
+                adjustSliderBounds('tenure', state.tenureValue);
+                tenureSlider.value = state.tenureValue;
+                calculateAndRender();
+            });
+            tenureSlider.addEventListener('input', (e) => {
+                state.tenureValue = parseFloat(e.target.value) || 0;
+                tenureInput.value = state.tenureValue;
+                calculateAndRender();
+            });
+        }
+
+        /* Dynamically expands slider bounds based on typed user values */
+        function adjustSliderBounds(type, value) {
+            if (type === 'principal') {
+                let currentMax = parseFloat(principalSlider.max);
+                if (value > currentMax) {
+                    currentMax = value * 1.5;
+                } else if (value < currentMax / 4 && currentMax > 1000000) {
+                    currentMax = Math.max(1000000, value * 2);
+                }
+                principalSlider.max = currentMax;
+                principalSlider.step = Math.max(1, Math.floor(currentMax / 1000));
+                
+                document.getElementById('principalMinLabel').innerHTML = `<span class="currencySymbol">${state.currencySymbol}</span>0`;
+                document.getElementById('principalMidLabel').innerHTML = `<span class="currencySymbol">${state.currencySymbol}</span>${formatCompactNumber(currentMax / 2)}`;
+                document.getElementById('principalMaxLabel').innerHTML = `<span class="currencySymbol">${state.currencySymbol}</span>${formatCompactNumber(currentMax)}`;
+            } else if (type === 'interest') {
+                let currentMax = parseFloat(interestSlider.max);
+                if (value > currentMax) {
+                    currentMax = Math.ceil(value * 1.25);
+                } else if (value < currentMax / 3 && currentMax > 25) {
+                    currentMax = Math.max(25, value * 2);
+                }
+                interestSlider.max = currentMax;
+                
+                document.getElementById('interestMinLabel').innerText = `0%`;
+                document.getElementById('interestMidLabel').innerText = `${(currentMax / 2).toFixed(1)}%`;
+                document.getElementById('interestMaxLabel').innerText = `${currentMax.toFixed(1)}%`;
+            } else if (type === 'tenure') {
+                let currentMax = parseFloat(tenureSlider.max);
+                if (value > currentMax) {
+                    currentMax = Math.ceil(value * 1.25);
+                } else if (value < currentMax / 3) {
+                    const defaultMax = state.tenureMode === 'years' ? 30 : 360;
+                    currentMax = Math.max(defaultMax, Math.ceil(value * 2));
+                }
+                tenureSlider.max = currentMax;
+                const unit = state.tenureMode === 'years' ? 'Yr' : 'Mo';
+                const units = state.tenureMode === 'years' ? 'Yrs' : 'Mos';
+
+                document.getElementById('tenureMinLabel').innerText = `0 ${unit}`;
+                document.getElementById('tenureMidLabel').innerText = `${Math.round(currentMax / 2)} ${units}`;
+                document.getElementById('tenureMaxLabel').innerText = `${Math.round(currentMax)} ${units}`;
+            }
+        }
+
+        function formatCompactNumber(num) {
+            if (num >= 1e12) return (num / 1e12).toFixed(1) + 'T';
+            if (num >= 1e9) return (num / 1e9).toFixed(1) + 'B';
+            if (num >= 1e6) return (num / 1e6).toFixed(1) + 'M';
+            if (num >= 1e3) return (num / 1e3).toFixed(0) + 'K';
+            return num.toFixed(0);
+        }
+
+        // Toggle Tenure Mode between Years and Months
+        function setTenureMode(mode) {
+            if (state.tenureMode === mode) return;
+
+            const btnYears = document.getElementById('btnTenureYears');
+            const btnMonths = document.getElementById('btnTenureMonths');
+            const unitLabel = document.getElementById('tenureUnitLabel');
+
+            if (mode === 'years') {
+                state.tenureValue = parseFloat((state.tenureValue / 12).toFixed(2));
+                state.tenureMode = 'years';
+                
+                btnYears.style.background = "var(--accent-gradient)";
+                btnYears.classList.add("text-white");
+                btnYears.classList.remove("theme-subtext");
+                
+                btnMonths.style.background = "transparent";
+                btnMonths.classList.remove("text-white");
+                btnMonths.classList.add("theme-subtext");
+
+                unitLabel.innerText = "Yrs";
+                tenureSlider.step = 1;
+            } else {
+                state.tenureValue = Math.round(state.tenureValue * 12);
+                state.tenureMode = 'months';
+
+                btnMonths.style.background = "var(--accent-gradient)";
+                btnMonths.classList.add("text-white");
+                btnMonths.classList.remove("theme-subtext");
+
+                btnYears.style.background = "transparent";
+                btnYears.classList.remove("text-white");
+                btnYears.classList.add("theme-subtext");
+
+                unitLabel.innerText = "Mos";
+                tenureSlider.step = 1;
+            }
+
+            tenureInput.value = state.tenureValue;
+            tenureSlider.value = state.tenureValue;
+            adjustSliderBounds('tenure', state.tenureValue);
+            calculateAndRender();
+        }
+
+        // Currency Handling
+        function handleCurrencyPreset(preset) {
+            if (preset === 'custom') {
+                customCurrencyInput.focus();
+                customCurrencyInput.select();
+            } else {
+                customCurrencyInput.value = preset;
+                updateCurrencySymbol(preset);
+            }
+        }
+
+        function updateCurrencySymbol(sym) {
+            state.currencySymbol = sym || '';
+            const elems = document.querySelectorAll('.currencySymbol');
+            elems.forEach(el => el.innerText = state.currencySymbol);
+            adjustSliderBounds('principal', state.principal);
+        }
+
+        // Theme Switcher Engine
+        function changeTheme(themeClass) {
+            document.body.className = `${themeClass} min-h-screen font-sans antialiased pb-12`;
+            state.theme = themeClass;
+        }
+
+        // Core Calculation Math
+        function calculateAndRender() {
+            const P = Math.max(0, state.principal);
+            const annualRate = Math.max(0, state.annualRate);
+            
+            const rawN = state.tenureMode === 'years' ? state.tenureValue * 12 : state.tenureValue;
+            const N = Math.max(0, Math.round(rawN));
+            document.getElementById('totalMonthsBadge').innerText = `${N} Months`;
+
+            const R = (annualRate / 100) / 12;
+
+            let emi = 0;
+            if (N > 0 && P > 0) {
+                if (R === 0) {
+                    emi = P / N;
+                } else {
+                    // Standard Loan EMI Formula
+                    emi = (P * R * Math.pow(1 + R, N)) / (Math.pow(1 + R, N) - 1);
+                }
+            } else if (N === 0 && P > 0) {
+                emi = P;
+            }
+
+            const totalPayment = emi * N;
+            const totalInterest = Math.max(0, totalPayment - P);
+
+            // Display Results
+            displayEmi.innerText = formatNumber(emi);
+            displayTotalInterest.innerText = formatNumber(totalInterest);
+            displayTotalPayment.innerText = formatNumber(totalPayment);
+
+            const interestPercent = totalPayment > 0 ? ((totalInterest / totalPayment) * 100).toFixed(1) : 0;
+            const principalPercent = totalPayment > 0 ? ((P / totalPayment) * 100).toFixed(1) : 0;
+
+            interestPercentText.innerText = `${interestPercent}% of total loan cost`;
+
+            // Legends & Chart Center Label
+            document.getElementById('chartCenterText').innerText = `${interestPercent}%`;
+            document.getElementById('legendPrincipalRatio').innerText = `${principalPercent}%`;
+            document.getElementById('legendInterestRatio').innerText = `${interestPercent}%`;
+            document.getElementById('legendPrincipalValue').innerHTML = `<span class="currencySymbol">${state.currencySymbol}</span>${formatNumber(P)}`;
+            document.getElementById('legendInterestValue').innerHTML = `<span class="currencySymbol">${state.currencySymbol}</span>${formatNumber(totalInterest)}`;
+
+            // Update SVG Donut Rings
+            updateSvgChart(P, totalInterest, totalPayment);
+
+            // Generate Amortization Schedule Data
+            generateAmortizationSchedule(P, R, N, emi);
+
+            // Render Schedule
+            renderScheduleTable();
+        }
+
+        // Update SVG Chart Rings
+        function updateSvgChart(principal, totalInterest, totalPayment) {
+            const svgInterestRing = document.getElementById('svgInterestRing');
+            const circumference = 2 * Math.PI * 40; // 251.327
+
+            if (totalPayment <= 0) {
+                svgInterestRing.style.strokeDashoffset = circumference;
+                return;
+            }
+
+            const interestRatio = totalInterest / totalPayment;
+            const interestOffset = circumference - (interestRatio * circumference);
+
+            svgInterestRing.style.strokeDasharray = `${circumference}`;
+            svgInterestRing.style.strokeDashoffset = `${interestOffset}`;
+        }
+
+        // Generate Amortization Schedule Data
+        function generateAmortizationSchedule(principal, monthlyRate, totalMonths, emi) {
+            state.amortizationData = [];
+            let balance = principal;
+
+            for (let m = 1; m <= totalMonths; m++) {
+                const beginningBalance = balance;
+                const interestPaid = balance * monthlyRate;
+                let principalPaid = emi - interestPaid;
+
+                if (m === totalMonths || balance < principalPaid) {
+                    principalPaid = balance;
+                }
+
+                balance = Math.max(0, balance - principalPaid);
+
+                state.amortizationData.push({
+                    month: m,
+                    year: Math.ceil(m / 12),
+                    beginningBalance: beginningBalance,
+                    emi: emi,
+                    principalPaid: principalPaid,
+                    interestPaid: interestPaid,
+                    remainingBalance: balance
+                });
+            }
+        }
+
+        // Render Table Rows based on Search and Monthly/Yearly View
+        function renderScheduleTable() {
+            const tbody = document.getElementById('scheduleTableBody');
+            tbody.innerHTML = '';
+
+            let dataToDisplay = [];
+
+            if (state.scheduleView === 'yearly') {
+                // Aggregate yearly totals
+                const yearlyMap = {};
+                state.amortizationData.forEach(row => {
+                    if (!yearlyMap[row.year]) {
+                        yearlyMap[row.year] = {
+                            year: row.year,
+                            beginningBalance: row.beginningBalance,
+                            emiTotal: 0,
+                            principalTotal: 0,
+                            interestTotal: 0,
+                            remainingBalance: 0
+                        };
+                    }
+                    yearlyMap[row.year].emiTotal += row.emi;
+                    yearlyMap[row.year].principalTotal += row.principalPaid;
+                    yearlyMap[row.year].interestTotal += row.interestPaid;
+                    yearlyMap[row.year].remainingBalance = row.remainingBalance;
+                });
+                dataToDisplay = Object.values(yearlyMap);
+            } else {
+                dataToDisplay = state.amortizationData;
+            }
+
+            // Filter search query
+            if (state.searchQuery) {
+                const q = state.searchQuery.trim().toLowerCase();
+                dataToDisplay = dataToDisplay.filter(row => {
+                    const label = state.scheduleView === 'yearly' ? `year ${row.year}` : `month ${row.month}`;
+                    return label.includes(q) || (row.month && row.month.toString() === q) || (row.year && row.year.toString() === q);
+                });
+            }
+
+            document.getElementById('showingRowsCount').innerText = dataToDisplay.length;
+
+            if (dataToDisplay.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="py-8 text-center theme-subtext">
+                            <i class="fa-solid fa-folder-open text-2xl mb-2 block"></i>
+                            No matching payment installments found.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            const fragment = document.createDocumentFragment();
+
+            dataToDisplay.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-700/20 transition-colors";
+
+                if (state.scheduleView === 'yearly') {
+                    tr.innerHTML = `
+                        <td class="py-3 px-4 font-bold text-blue-400">Year ${row.year}</td>
+                        <td class="py-3 px-4 text-right"><span class="currencySymbol">${state.currencySymbol}</span>${formatNumber(row.beginningBalance)}</td>
+                        <td class="py-3 px-4 text-right font-bold"><span class="currencySymbol">${state.currencySymbol}</span>${formatNumber(row.emiTotal)}</td>
+                        <td class="py-3 px-4 text-right text-blue-400"><span class="currencySymbol">${state.currencySymbol}</span>${formatNumber(row.principalTotal)}</td>
+                        <td class="py-3 px-4 text-right text-amber-500"><span class="currencySymbol">${state.currencySymbol}</span>${formatNumber(row.interestTotal)}</td>
+                        <td class="py-3 px-4 text-right font-bold"><span class="currencySymbol">${state.currencySymbol}</span>${formatNumber(row.remainingBalance)}</td>
+                    `;
+                } else {
+                    tr.innerHTML = `
+                        <td class="py-3 px-4 font-semibold text-slate-300">Month ${row.month}</td>
+                        <td class="py-3 px-4 text-right"><span class="currencySymbol">${state.currencySymbol}</span>${formatNumber(row.beginningBalance)}</td>
+                        <td class="py-3 px-4 text-right font-bold"><span class="currencySymbol">${state.currencySymbol}</span>${formatNumber(row.emi)}</td>
+                        <td class="py-3 px-4 text-right text-blue-400"><span class="currencySymbol">${state.currencySymbol}</span>${formatNumber(row.principalPaid)}</td>
+                        <td class="py-3 px-4 text-right text-amber-500"><span class="currencySymbol">${state.currencySymbol}</span>${formatNumber(row.interestPaid)}</td>
+                        <td class="py-3 px-4 text-right font-bold"><span class="currencySymbol">${state.currencySymbol}</span>${formatNumber(row.remainingBalance)}</td>
+                    `;
+                }
+
+                fragment.appendChild(tr);
+            });
+
+            tbody.appendChild(fragment);
+        }
+
+        function setScheduleView(view) {
+            state.scheduleView = view;
+            const btnMonthly = document.getElementById('btnViewMonthly');
+            const btnYearly = document.getElementById('btnViewYearly');
+
+            if (view === 'monthly') {
+                btnMonthly.style.background = "var(--accent-gradient)";
+                btnMonthly.classList.add("text-white");
+                btnMonthly.classList.remove("theme-subtext");
+
+                btnYearly.style.background = "transparent";
+                btnYearly.classList.remove("text-white");
+                btnYearly.classList.add("theme-subtext");
+            } else {
+                btnYearly.style.background = "var(--accent-gradient)";
+                btnYearly.classList.add("text-white");
+                btnYearly.classList.remove("theme-subtext");
+
+                btnMonthly.style.background = "transparent";
+                btnMonthly.classList.remove("text-white");
+                btnMonthly.classList.add("theme-subtext");
+            }
+
+            renderScheduleTable();
+        }
+
+        function filterSchedule(query) {
+            state.searchQuery = query;
+            renderScheduleTable();
+        }
+
+        // Export Amortization Schedule to CSV
+        function exportCSV() {
+            if (state.amortizationData.length === 0) return;
+
+            let csv = `Month,Beginning Balance (${state.currencySymbol}),EMI (${state.currencySymbol}),Principal Paid (${state.currencySymbol}),Interest Paid (${state.currencySymbol}),Remaining Balance (${state.currencySymbol})\n`;
+
+            state.amortizationData.forEach(row => {
+                csv += `${row.month},${row.beginningBalance.toFixed(2)},${row.emi.toFixed(2)},${row.principalPaid.toFixed(2)},${row.interestPaid.toFixed(2)},${row.remainingBalance.toFixed(2)}\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.setAttribute('href', url);
+            a.setAttribute('download', `Loan_Amortization_Schedule.csv`);
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Helper Number Formatter
+        function formatNumber(num) {
+            return num.toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        // Reset to Defaults
+        function resetDefaults() {
+            state.principal = 100000;
+            state.annualRate = 7.5;
+            state.tenureValue = 15;
+            
+            principalInput.value = 100000;
+            principalSlider.max = 1000000;
+            principalSlider.value = 100000;
+
+            interestInput.value = 7.5;
+            interestSlider.max = 25;
+            interestSlider.value = 7.5;
+
+            tenureInput.value = 15;
+            tenureSlider.max = 30;
+            tenureSlider.value = 15;
+
+            adjustSliderBounds('principal', 100000);
+            adjustSliderBounds('interest', 7.5);
+
+            if (state.tenureMode === 'months') {
+                setTenureMode('years');
+            } else {
+                adjustSliderBounds('tenure', 15);
+                calculateAndRender();
+            }
+        }
+    </script>
+</body>
+</html>
