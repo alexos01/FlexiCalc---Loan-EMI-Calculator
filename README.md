@@ -51,3 +51,7 @@ N: Number of months (loan tenure).
 ## 🚀 Quick Start
 
 No installation or build steps required!
+
+to open it 
+
+https://alexos01.github.io/FlexiCalc---Loan-EMI-Calculator/
